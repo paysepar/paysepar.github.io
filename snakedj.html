@@ -1,0 +1,351 @@
+<!DOCTYPE HTML>
+<head>
+<meta name="description" content="Can a snake be a DJ? Yes!">
+<meta name="author" content="Payam Paysepar">
+
+<style>
+* { margin: 0; padding: 0;}
+
+body, html { height:100%; }
+
+#canvas {
+    position:absolute;
+    width:100%;
+    height:100%;
+    border: 5px solid blue;
+    box-sizing: border-box;
+}
+</style>
+</head>
+<body>
+<canvas id="canvas">
+</canvas>
+<audio src="drums/kick-classic.mp3" preload="auto" id="leanBass"/>
+<audio src="drums/hihat-808.mp3" preload="auto" id="leanChords"/>
+<audio src="drums/snare-sumo.mp3" preload="auto" id="leanDrums"/>
+<audio src="drums/clap_017.mp3" preload="auto" id="leanPad"/>
+<audio src="drums/tambourine_027.mp3" preload="auto" id="leanSynth"/>
+
+<script>
+
+// JavaScript object bindings of HTML elements
+var canvas = document.getElementById("canvas");
+var context = canvas.getContext("2d");
+var leanOnStems = [document.getElementById("leanBass"),
+                   document.getElementById("leanChords"),
+                   document.getElementById("leanDrums"),
+                   document.getElementById("leanPad"),
+                   document.getElementById("leanSynth"),
+                   document.getElementById("leanVocal")];
+    
+// Canvas sizing is set to parent dimensions
+canvas.height = canvas.parentElement.clientHeight;
+canvas.width = canvas.parentElement.clientWidth;
+    
+// Snake width is equal to 1/15th of page width
+var snkwidth = Math.floor(canvas.width / 15);
+
+// Resize canvas so dimensions are multiple of snake width
+canvas.width = Math.floor(canvas.width / snkwidth) * snkwidth;
+canvas.height = Math.floor(canvas.height / snkwidth) * snkwidth;
+    
+// Height of canvas in snake widths
+var nrSnakesY = Math.floor(canvas.height / snkwidth);
+
+// Canvas dimensions
+cWidth = canvas.width;
+cHeight = canvas.height;
+
+// Snake object
+var snk = {};
+// Snake orientation, direction of the snake's next movement. 0 is right, 1 is up, 2 is left, 3 is down.
+snk.orient = 0;
+// Snake's last orientation, direction of the snake's last movement
+snk.lastorient = 0;
+// Snake width
+snk.width = snkwidth;
+// Snake starting speed (ms between movements)
+snk.startingSpeed = 800;
+// Percent change in time between snake movements for every fruit eaten
+snk.speedBoost = 0.95;
+// Number of ms between snake movements
+snk.speed = snk.startingSpeed;
+// Number of food eaten
+snk.nrEaten = 0;
+// Number of beats in music the loop. Also number of segments of snake.
+snk.nrBeats = 8;
+// Array of arrays of sounds. First dimension is beat number, second dimension is the sounds.
+snk.sounds = [];
+// Reset snake sounds
+snk.soundReset = function() {
+    for (var i = 0; i < snk.nrBeats; i++)
+    {
+        snk.sounds[i] = [];
+    }
+};
+snk.soundReset();
+// Snake coordinates, stores positions of corners of the snake on canvas.
+snk.coord = [];
+// Set snake coordinates to initial values and set orientation to 0.
+snk.coordSet = function() {
+    this.coord = [[Math.floor(snkwidth*.5) + snkwidth*snk.nrBeats, Math.floor(snkwidth*5.5)], [Math.floor(snkwidth*.5), Math.floor(snkwidth*5.5)]];
+    // Orient snake to the right
+    snk.orient = 0;
+    snk.lastorient = 0;
+}
+snk.coordSet();
+
+
+// Current beat that is being played, beat indices start at 0
+snk.beatNow = 0;
+
+// Change direction of snake movement by changing snk.orient according to key presses
+var changeDirection = function(e) {
+    console.log(e.keyCode);
+    switch(e.keyCode)
+    {
+        case 37:
+        case 65:
+            if (snk.lastorient === 1 || snk.lastorient === 3)
+                {
+                    snk.orient = 2;
+                }
+            break;
+        case 38:
+        case 37:
+            if (snk.lastorient === 0 || snk.lastorient === 2)
+                {
+                    snk.orient = 1;
+                }
+            break;
+        case 68:
+        case 39:
+            if (snk.lastorient === 1 || snk.lastorient === 3)
+                {
+                    snk.orient = 0;
+                }
+            break;
+        case 40:
+        case 83:
+            if (snk.lastorient === 0 || snk.lastorient === 2)
+                {
+                    snk.orient = 3;
+                }
+            break;
+    }
+};
+
+// Change direction of snake movement by changing snk.orient according to positions of touches relative to head of snake
+var changeDirection1 = function(e) {
+//    var xTouch = e.pageX - canvas.offsetLeft;
+//    var yTouch = e.pageY - canvas.offsetTop;
+    var xTouch = e.offsetX;
+    var yTouch = e.offsetY;
+    
+    var xDiff = xTouch - snk.coord[0][0];
+    var yDiff = yTouch - snk.coord[0][1];
+    if (Math.abs(xDiff) > Math.abs(yDiff))
+        {
+            if (xDiff > 0 && snk.lastorient !== 0 && snk.lastorient !== 2)
+            {
+                snk.orient = 0;
+            }
+            else if (xDiff < 0 && snk.lastorient !== 0 && snk.lastorient !== 2)
+            {
+                snk.orient = 2;
+            }
+        }
+    else
+        {
+            if (yDiff > 0 && snk.lastorient !== 3 && snk.lastorient !== 1)
+            {
+                snk.orient = 3;
+            }
+            else if (yDiff < 0 && snk.lastorient !== 3 && snk.lastorient !== 1)
+            {
+                snk.orient = 1;
+            }
+        }
+}
+
+    
+// Move snake in proper direction
+snk.move = function() {
+    // Move the first snake coordinate according to orientation
+    switch (this.orient)
+    {
+        case 0:
+            if (this.lastorient !== 0)
+                {
+                    this.coord.splice(1, 0, this.coord[0].slice(0));
+                }
+            this.coord[0][0] = this.coord[0][0] + this.width;
+            this.lastorient = 0;
+            this.checkCollision();
+            break;
+        case 1:
+            if (this.lastorient !== 1)
+                {
+                    this.coord.splice(1, 0, this.coord[0].slice(0));
+                }
+            this.coord[0][1] = this.coord[0][1] - this.width;
+            this.lastorient = 1;
+            this.checkCollision();
+            break;
+        case 2:
+            if (this.lastorient !== 2)
+                {
+                    this.coord.splice(1, 0, this.coord[0].slice(0));
+                }
+            this.coord[0][0] = this.coord[0][0] - this.width;
+            this.lastorient = 2;
+            this.checkCollision();
+            break;
+        case 3:
+            if (this.lastorient !== 3)
+                {
+                    this.coord.splice(1, 0, this.coord[0].slice(0));
+                }
+            this.coord[0][1] = this.coord[0][1] + this.width;
+            this.lastorient = 3;
+            this.checkCollision();
+            break;
+        default:
+            this.lastorient = 0;
+            this.checkCollision();
+            this.coord[0][0] = this.coord[0][0] + this.width;
+            break;
+    }
+    // Move last snake coordinate in direction of second to last coordinate
+    // First get difference in x and y of 2nd to last and last coords
+    var diffX = this.coord[this.coord.length - 2][0] - this.coord[this.coord.length - 1][0];
+    var diffY = this.coord[this.coord.length - 2][1] - this.coord[this.coord.length - 1][1];
+    // Change last snake coord accordingly
+    if (diffX != 0)
+        {
+            diffX = diffX/Math.abs(diffX);
+            this.coord[this.coord.length - 1][0] = this.coord[this.coord.length - 1][0] + (diffX * this.width);
+        }
+    if (diffY != 0)
+        {
+            diffY = diffY/Math.abs(diffY);
+            this.coord[this.coord.length - 1][1] = this.coord[this.coord.length - 1][1] + (diffY * this.width);
+        }
+    // If last snake coordinate is now equal to second to last, then push last off
+    if (this.coord[this.coord.length - 1][0] === this.coord[this.coord.length - 2][0] && this.coord[this.coord.length - 1][1] === this.coord[this.coord.length - 2][1])
+        {
+            this.coord.splice(this.coord.length - 1, 1);
+        }
+};
+
+snk.checkCollision = function() {
+    // Check for collision with walls
+    if (this.coord[0][0] > cWidth || this.coord[0][1] > cHeight || this.coord[0][0] < 0 || this.coord[0][1] < 0)
+        {
+            gameOver();
+        }
+    if (this.coord[0][0] == food[0][0] && this.coord[0][1] == food[0][1])
+        {
+            this.eatFood(food[0]);
+        }
+}
+
+
+// changes location of food whenever snake eats it
+snk.eatFood = function(food) {
+    food[0] = this.width * Math.floor(13.9*Math.random()) + Math.floor(this.width/2);
+    food[1] = this.width * Math.floor((nrSnakesY-1)*Math.random()) + Math.floor(this.width/2);
+    this.nrEaten++;
+    this.speed = Math.floor(this.speed * this.speedBoost);
+    if (this.nrEaten % 4 === 0)
+        {
+            var newSound = leanOnStems[this.nrEaten % 5];
+            this.sounds[this.beatNow].push(newSound);
+        }
+}
+
+snk.playSounds = function() {
+    for (var i = 0; i < this.sounds[this.beatNow].length; i++)
+        {
+            this.sounds[this.beatNow][i].currentTime = 0;
+            this.sounds[this.beatNow][i].play();
+        }
+    this.beatNow = (this.beatNow + 1) % 8;
+}
+
+// Draws snake on canvas
+snk.draw = function() {
+    context.lineWidth = snk.width;
+    context.beginPath();
+    context.moveTo(this.coord[0][0], this.coord[0][1]); // First snake coordinate
+    for (var i = 1; i < this.coord.length; i++) // Draw lines to the rest of the coordinates
+        {
+            context.lineTo(this.coord[i][0], this.coord[i][1]);
+        }
+    context.stroke();
+};
+    
+// Food array. Stores food objects.
+var food = [[Math.floor(snk.width*2.5), Math.floor(snk.width*4.5), 1]];
+    
+// System time
+var t0 = 0;
+var t1;
+    
+// Main drawing loop. Clears canvas and draws.
+function draw() {
+    t1 = performance.now();
+    if (t1 - t0 > snk.speed) {
+        context.clearRect(0, 0, cWidth, cHeight);
+        snk.move();
+        snk.draw();
+        drawFood();
+        snk.playSounds();
+        t0 = performance.now();
+    }
+    window.requestAnimationFrame(draw);
+};
+    
+// Initiate main drawing loop
+draw();
+    
+
+// End current game if snake collides
+function gameOver() {
+    // Place snake in starting position and orientation
+    snk.coordSet();
+    // Reset nrEaten to 0
+    snk.nrEaten = 0;
+    // Reset speed to initial
+    snk.speed = snk.startingSpeed;
+    // Reset sounds
+    snk.soundReset();
+}
+
+
+// Draws food on canvas
+function drawFood() {
+    for (var i = 0; i < food.length; i++)
+        {
+            context.beginPath();
+            if ((snk.nrEaten + 1) % 4 === 0)
+            {
+                context.fillStyle = "#ff0000"
+            }
+            else
+            {
+                context.fillStyle = "#000000"
+            }
+            context.arc(food[i][0], food[i][1], Math.floor(snk.width/2), 0, Math.PI * 2);
+            context.fill();
+        }
+}
+    
+// Event listeners
+window.addEventListener("keydown", changeDirection);
+canvas.addEventListener("touchstart", changeDirection1);
+canvas.addEventListener("mousedown", changeDirection1);
+
+
+</script>
+</body>
