@@ -135,13 +135,10 @@ var changeDirection = function(e) {
     }
 };
 
-// Change direction of snake movement by changing snk.orient according to positions of touches relative to head of snake
+// Change direction of snake movement by changing snk.orient according to positions of touches & clicks relative to head of snake
 var changeDirection1 = function(e) {
-//    var xTouch = e.pageX - canvas.offsetLeft;
-//    var yTouch = e.pageY - canvas.offsetTop;
     var xTouch = e.offsetX;
     var yTouch = e.offsetY;
-    
     var xDiff = xTouch - snk.coord[0][0];
     var yDiff = yTouch - snk.coord[0][1];
     if (Math.abs(xDiff) > Math.abs(yDiff))
@@ -282,10 +279,11 @@ snk.draw = function() {
     context.lineWidth = snk.width;
     context.beginPath();
     context.moveTo(this.coord[0][0], this.coord[0][1]); // First snake coordinate
+    context.fillStyle = "#000000";
     for (var i = 1; i < this.coord.length; i++) // Draw lines to the rest of the coordinates
-        {
-            context.lineTo(this.coord[i][0], this.coord[i][1]);
-        }
+    {
+        context.lineTo(this.coord[i][0], this.coord[i][1]);
+    }
     context.stroke();
 };
     
