@@ -20,11 +20,18 @@ body, html { height:100%; }
 <body>
 <canvas id="canvas">
 </canvas>
+<!--
 <audio src="drums/kick-classic.mp3" preload="auto" id="leanBass"/>
 <audio src="drums/hihat-808.mp3" preload="auto" id="leanChords"/>
 <audio src="drums/snare-sumo.mp3" preload="auto" id="leanDrums"/>
 <audio src="drums/clap_017.mp3" preload="auto" id="leanPad"/>
 <audio src="drums/tambourine_027.mp3" preload="auto" id="leanSynth"/>
+-->
+<audio src="drums/kick-heavy.wav" preload="auto" id="leanBass"/>
+<audio src="drums/hihat-electro.wav" preload="auto" id="leanChords"/>
+<audio src="drums/snare-tape.wav" preload="auto" id="leanDrums"/>
+<audio src="drums/clap-808.wav" preload="auto" id="leanPad"/>
+<audio src="drums/tom-fm.wav" preload="auto" id="leanSynth"/>
 
 <script>
 
@@ -72,7 +79,7 @@ snk.halfwidth = Math.floor(snk.width/2);
 // Snake starting speed (ms between movements)
 snk.startingSpeed = 800;
 // Percent change in time between snake movements for every fruit eaten
-snk.speedBoost = 0.95;
+snk.speedBoost = 0.92;
 // Number of ms between snake movements
 snk.speed = snk.startingSpeed;
 // Number of food eaten
@@ -275,10 +282,39 @@ snk.checkCollision = function() {
         {
             this.eatFood(food[0]);
         }
+    for (var i = 3; i < this.coord.length; i++)
+    {
+        var x0 = this.coord[i-1][0];
+        var x1 = this.coord[i][0];
+        var y0 = this.coord[i-1][1];
+        var y1 = this.coord[i][1];
+        // make x1 larger than x0
+        if (x0 > x1)
+        {
+            var temp = x1;
+            x1 = x0;
+            x0 = temp;
+        }
+        if (y0 > y1)
+        {
+            var temp = y1;
+            y1 = y0;
+            y0 = temp;
+        }
+        if (x0 === x1 && x0 === this.coord[0][0] && this.coord[0][1] <= y1 && this.coord[0][1] >= y0)
+        {
+            gameOver();
+        }
+        else if (y0 === y1 && y0 === this.coord[0][1] && this.coord[0][0] <= x1 && this.coord[0][0] >= x0)
+        {
+            gameOver();
+        }
+    }
 }
 
 
 // changes location of food whenever snake eats it
+// adds a sound and 1 snake segment and speed boost for every 4th food eaten
 snk.eatFood = function(food) {
     food[0] = this.width * Math.floor(13.9*Math.random()) + Math.floor(this.width/2);
     food[1] = this.width * Math.floor((nrSnakesY-1)*Math.random()) + Math.floor(this.width/2);
@@ -288,6 +324,31 @@ snk.eatFood = function(food) {
             var newSound = leanOnStems[this.nrEaten % 5];
             this.sounds[this.beatNow].push(newSound);
             this.speed = Math.floor(this.speed * this.speedBoost);
+            // enlarge snake by 1 segment
+            var xlast = this.coord[this.coord.length-1][0];
+            var ylast = this.coord[this.coord.length-1][1];
+            var xntlast = this.coord[this.coord.length-2][0];
+            var yntlast = this.coord[this.coord.length-2][1];
+            if (xlast > xntlast)
+            {
+                console.log(xlast);
+                this.coord[this.coord.length-1][0] += this.width;
+                console.log(this.coord[this.coord.length-1][0]);
+            }
+            else if (xntlast > xlast)
+            {
+                console.log(xlast);
+                this.coord[this.coord.length-1][0] -= this.width;
+                console.log(this.coord[this.coord.length-1][0]);
+            }
+            else if (ylast > yntlast)
+            {
+                this.coord[this.coord.length-1][1] -= this.width;
+            }
+            else if (yntlast > ylast)
+            {
+                this.coord[this.coord.length-1][0] += this.width;
+            }
         }
 }
 
@@ -298,6 +359,13 @@ snk.playSounds = function() {
             this.sounds[this.beatNow][i].play();
         }
     this.beatNow = (this.beatNow + 1) % 8;
+}
+
+snk.drawScore = function() {
+    context.font = "30px Comic Sans MS";
+    context.fillStyle = "#ff0000";
+    context.textAlign = "right";
+    context.fillText(this.nrEaten.toString(), cWidth - 50, cHeight - 50);
 }
 
 // Draws snake on canvas
@@ -312,28 +380,6 @@ snk.draw = function() {
     for (var i = 1; i < snk.coord.length; i++)
     {
         context.lineTo(this.coord[i][0], this.coord[i][1]);
-        var xdist = this.coord[i-1][0] - this.coord[i][0];
-        var ydist = this.coord[i-1][1] - this.coord[i][1];
-        segNo = segNo + Math.round((Math.abs(xdist)+Math.abs(ydist))/this.width);
-        if (segNo >= this.beatNow && beatNotDrawn)
-        {
-            beatNotDrawn = !beatNotDrawn;
-            var xdir = xdist/Math.abs(xdist) || 0;
-            var ydir = ydist/Math.abs(ydist) || 0;
-            var segDiff = segNo - this.beatNow;
-            var xcoor = this.coord[i][0] + segDiff*snk.width*xdir;
-            var ycoor = this.coord[i][1] + segDiff*snk.width*ydir;
-            context.stroke();
-            context.beginPath();
-            context.fillStyle = "#ff0000";
-            context.arc(xcoor, ycoor, Math.floor(snk.halfwidth/2), 0, twopi);
-            context.fill();
-
-            context.beginPath();
-            context.strokeStyle = "#ffffff";
-            context.lineCap = "square";
-            context.moveTo(this.coord[i][0], this.coord[i][1]);
-        }
     }
     context.stroke();
 };
@@ -353,6 +399,7 @@ function draw() {
         snk.move();
         snk.draw();
         drawFood();
+        snk.drawScore();
         snk.playSounds();
         t0 = performance.now();
     }
