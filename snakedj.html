@@ -199,11 +199,13 @@ var changeDirection1 = function(e) {
             {
                 snk.move();
                 snk.draw();
+                window.navigator.vibrate(20);
             }
             else if (xDiff < 0 && snk.lastorient === 2)
             {
                 snk.move();
                 snk.draw();
+                window.navigator.vibrate(20);
             }
         }
     else
@@ -222,11 +224,13 @@ var changeDirection1 = function(e) {
             {
                 snk.move();
                 snk.draw();
+                window.navigator.vibrate(20);
             }
             else if (yDiff < 0 && snk.lastorient === 1)
             {
                 snk.move();
                 snk.draw();
+                window.navigator.vibrate(20);
             }
         }
 }
