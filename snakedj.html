@@ -129,6 +129,7 @@ var changeDirection = function(e) {
             else if (snk.lastorient == 2)
                 {
                     context.clearRect(0, 0, cWidth, cHeight);
+                    snk.drawScore();
                     drawFood();
                     snk.move();
                     snk.draw();
@@ -143,6 +144,7 @@ var changeDirection = function(e) {
             else if (snk.lastorient == 1)
                 {
                     context.clearRect(0, 0, cWidth, cHeight);
+                    snk.drawScore();
                     drawFood();
                     snk.move();
                     snk.draw();
@@ -157,6 +159,7 @@ var changeDirection = function(e) {
             else if (snk.lastorient == 0)
                 {
                     context.clearRect(0, 0, cWidth, cHeight);
+                    snk.drawScore();
                     drawFood();
                     snk.move();
                     snk.draw();
@@ -171,6 +174,7 @@ var changeDirection = function(e) {
             else if (snk.lastorient == 3)
                 {
                     context.clearRect(0, 0, cWidth, cHeight);
+                    snk.drawScore();
                     drawFood();
                     snk.move();
                     snk.draw();
@@ -200,6 +204,7 @@ var changeDirection1 = function(e) {
             else if (xDiff > 0 && snk.lastorient === 0)
             {
                 context.clearRect(0, 0, cWidth, cHeight);
+                snk.drawScore();
                 drawFood();
                 snk.move();
                 snk.draw();
@@ -208,6 +213,7 @@ var changeDirection1 = function(e) {
             else if (xDiff < 0 && snk.lastorient === 2)
             {
                 context.clearRect(0, 0, cWidth, cHeight);
+                snk.drawScore();
                 drawFood();
                 snk.move();
                 snk.draw();
@@ -229,6 +235,7 @@ var changeDirection1 = function(e) {
             else if (yDiff > 0 && snk.lastorient === 3)
             {
                 context.clearRect(0, 0, cWidth, cHeight);
+                snk.drawScore();
                 drawFood();
                 snk.move();
                 snk.draw();
@@ -237,6 +244,7 @@ var changeDirection1 = function(e) {
             else if (yDiff < 0 && snk.lastorient === 1)
             {
                 context.clearRect(0, 0, cWidth, cHeight);
+                snk.drawScore();
                 drawFood();
                 snk.move();
                 snk.draw();
