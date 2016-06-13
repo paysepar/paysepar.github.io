@@ -550,7 +550,7 @@ function keyboardDifficulty(e) { // focus difficulty by using "left" and "right"
 
 function selectDifficulty(e) { // select difficulty with mouse or touch
     var currentX = e.offsetX;
-    var selectedDifficulty;
+    var selectedDifficulty = 0;
     for (var i = 0; i < 3; i++)
     {
         if (currentX < Math.floor((i+1) * cWidth / 3) && currentX > Math.floor(i * cWidth / 3))
