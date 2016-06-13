@@ -499,7 +499,7 @@ function hoverDifficulty(e) { // focus difficulty by hovering over options
         {
             gameOver.hovered = i;
             snk.speed = snk.difficultySpeeds[i];
-            gameOver.difficultySelectAnimationDraw();
+            draw();
             break;
         }
     }
@@ -535,14 +535,14 @@ function keyboardDifficulty(e) { // focus difficulty by using "left" and "right"
             var gameDifficultyNew = (((gameOver.hovered - 1)%3) + 3) % 3;
             gameOver.hovered = gameDifficultyNew;
             snk.speed = snk.difficultySpeeds[gameDifficultyNew];
-            gameOver.difficultySelectAnimationDraw();
+            draw();
             break;
         case 68: // right arrow or "d"
         case 39:
             gameDifficultyNew = (((gameOver.hovered + 1)%3) + 3) % 3;
             gameOver.hovered = gameDifficultyNew;
             snk.speed = snk.difficultySpeeds[gameDifficultyNew];
-            gameOver.difficultySelectAnimationDraw();
+            draw();
             break;
         case 32:
         case 13:
