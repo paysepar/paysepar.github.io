@@ -314,11 +314,13 @@ snk.move = function() {
     
 snk.moveAndRedrawCanvasAndPlaySounds = function() {
     context.clearRect(0, 0, cWidth, cHeight);
+    gameOver.difficultySelectAnimationDraw();
     drawFood();
     this.move();
     this.draw();
     this.drawScore();
     this.playSounds();
+    gameOver.difficultySelectAnimationDraw();
 }
 
 snk.checkCollision = function() {
@@ -499,7 +501,7 @@ function hoverDifficulty(e) { // focus difficulty by hovering over options
         {
             gameOver.hovered = i;
             snk.speed = snk.difficultySpeeds[i];
-            draw();
+            snk.moveAndRedrawCanvasAndPlaySounds();
             break;
         }
     }
@@ -535,14 +537,14 @@ function keyboardDifficulty(e) { // focus difficulty by using "left" and "right"
             var gameDifficultyNew = (((gameOver.hovered - 1)%3) + 3) % 3;
             gameOver.hovered = gameDifficultyNew;
             snk.speed = snk.difficultySpeeds[gameDifficultyNew];
-            draw();
+            snk.moveAndRedrawCanvasAndPlaySounds();
             break;
         case 68: // right arrow or "d"
         case 39:
             gameDifficultyNew = (((gameOver.hovered + 1)%3) + 3) % 3;
             gameOver.hovered = gameDifficultyNew;
             snk.speed = snk.difficultySpeeds[gameDifficultyNew];
-            draw();
+            snk.moveAndRedrawCanvasAndPlaySounds();
             break;
         case 32:
         case 13:
@@ -597,7 +599,6 @@ function draw() {
     t1 = performance.now();
     if (t1 - t0 > snk.speed) {
         snk.moveAndRedrawCanvasAndPlaySounds();
-        gameOver.difficultySelectAnimationDraw();
         t0 = performance.now();
     }
     window.requestAnimationFrame(draw);
