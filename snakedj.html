@@ -1,8 +1,14 @@
+<!--
+Consolidate the step and redrawing of everything into 1 function. Make sure the music is in sync when you speed the snake up with forward arrow. Preload audio for it to work on phones. When you die, display a brief message with your final score and also a countdown to new game start.
+
+-->
+
+
 <!DOCTYPE HTML>
 <head>
 <meta name="description" content="Can a snake be a DJ? Yes!">
 <meta name="author" content="Payam Paysepar">
-<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta name="viewport" content="width=device-width initial-scale=1 maximum-scale=1 user-scalable=0">
 <style>
 * { margin: 0; padding: 0;}
 
@@ -14,6 +20,10 @@ body, html { height:100%; }
     height:100%;
     border: 5px solid blue;
     box-sizing: border-box;
+}
+img {
+    display: none;
+    position: fixed;
 }
 </style>
 </head>
@@ -32,7 +42,9 @@ body, html { height:100%; }
 <audio src="drums/snare-tape.wav" preload="auto" id="leanDrums"/>
 <audio src="drums/clap-808.wav" preload="auto" id="leanPad"/>
 <audio src="drums/tom-fm.wav" preload="auto" id="leanSynth"/>
-
+<img src="img/ketchup.jpg" id="ketchup">
+<img src="img/szechuan.jpg" id="szechuan">
+<img src="img/tabasco.jpg" id="tobasco">
 <script>
 
 // JavaScript object bindings of HTML elements
@@ -44,13 +56,17 @@ var leanOnStems = [document.getElementById("leanBass"),
                    document.getElementById("leanPad"),
                    document.getElementById("leanSynth"),
                    document.getElementById("leanVocal")];
-    
+var sauceImages = [document.getElementById("ketchup"),
+                   document.getElementById("tobasco"),
+                   document.getElementById("szechuan")];
+
 // Canvas sizing is set to parent dimensions
 canvas.height = canvas.parentElement.clientHeight;
 canvas.width = canvas.parentElement.clientWidth;
     
 // Snake width is equal to 1/15th of page width
-var snkwidth = Math.floor(canvas.width / 15);
+var snkFrac = 15;
+var snkwidth = Math.floor(canvas.width / snkFrac);
 
 // Resize canvas so dimensions are multiple of snake width
 canvas.width = Math.floor(canvas.width / snkwidth) * snkwidth;
@@ -62,6 +78,10 @@ var nrSnakesY = Math.floor(canvas.height / snkwidth);
 // Canvas dimensions
 var cWidth = canvas.width;
 var cHeight = canvas.height;
+var halfcanvas = Math.floor(cWidth/2);
+var thirdcanvas = Math.floor(cWidth/3);
+var fourthcanvas = Math.floor(cWidth/4);
+var sixthcanvas = Math.floor(cWidth/6);
     
 // 2 pi
 var twopi = Math.PI * 2;
@@ -78,6 +98,8 @@ snk.width = snkwidth;
 snk.halfwidth = Math.floor(snk.width/2);
 // Snake starting speed (ms between movements)
 snk.startingSpeed = 800;
+// Snake speed of different difficulty levels
+snk.difficultySpeeds = [800, 500, 250];
 // Percent change in time between snake movements for every fruit eaten
 snk.speedBoost = 0.92;
 // Number of ms between snake movements
@@ -117,7 +139,6 @@ for (var i = 0; i < snk.nrBeats; i++)
 
 // Change direction of snake movement by changing snk.orient according to key presses
 var changeDirection = function(e) {
-    console.log(e.keyCode);
     switch(e.keyCode)
     {
         case 37:
@@ -128,11 +149,7 @@ var changeDirection = function(e) {
                 }
             else if (snk.lastorient == 2)
                 {
-                    context.clearRect(0, 0, cWidth, cHeight);
-                    snk.drawScore();
-                    drawFood();
-                    snk.move();
-                    snk.draw();
+                    snk.moveAndRedrawCanvasAndPlaySounds();
                 }
             break;
         case 38:
@@ -143,11 +160,7 @@ var changeDirection = function(e) {
                 }
             else if (snk.lastorient == 1)
                 {
-                    context.clearRect(0, 0, cWidth, cHeight);
-                    snk.drawScore();
-                    drawFood();
-                    snk.move();
-                    snk.draw();
+                    snk.moveAndRedrawCanvasAndPlaySounds();
                 }
             break;
         case 68:
@@ -158,11 +171,7 @@ var changeDirection = function(e) {
                 }
             else if (snk.lastorient == 0)
                 {
-                    context.clearRect(0, 0, cWidth, cHeight);
-                    snk.drawScore();
-                    drawFood();
-                    snk.move();
-                    snk.draw();
+                    snk.moveAndRedrawCanvasAndPlaySounds();
                 }
             break;
         case 40:
@@ -173,11 +182,7 @@ var changeDirection = function(e) {
                 }
             else if (snk.lastorient == 3)
                 {
-                    context.clearRect(0, 0, cWidth, cHeight);
-                    snk.drawScore();
-                    drawFood();
-                    snk.move();
-                    snk.draw();
+                    snk.moveAndRedrawCanvasAndPlaySounds();
                 }
             break;
     }
@@ -203,20 +208,12 @@ var changeDirection1 = function(e) {
             }
             else if (xDiff > 0 && snk.lastorient === 0)
             {
-                context.clearRect(0, 0, cWidth, cHeight);
-                snk.drawScore();
-                drawFood();
-                snk.move();
-                snk.draw();
+                snk.moveAndRedrawCanvasAndPlaySounds();
                 window.navigator.vibrate(20);
             }
             else if (xDiff < 0 && snk.lastorient === 2)
             {
-                context.clearRect(0, 0, cWidth, cHeight);
-                snk.drawScore();
-                drawFood();
-                snk.move();
-                snk.draw();
+                snk.moveAndRedrawCanvasAndPlaySounds();
                 window.navigator.vibrate(20);
             }
         }
@@ -234,20 +231,12 @@ var changeDirection1 = function(e) {
             }
             else if (yDiff > 0 && snk.lastorient === 3)
             {
-                context.clearRect(0, 0, cWidth, cHeight);
-                snk.drawScore();
-                drawFood();
-                snk.move();
-                snk.draw();
+                snk.moveAndRedrawCanvasAndPlaySounds();
                 window.navigator.vibrate(20);
             }
             else if (yDiff < 0 && snk.lastorient === 1)
             {
-                context.clearRect(0, 0, cWidth, cHeight);
-                snk.drawScore();
-                drawFood();
-                snk.move();
-                snk.draw();
+                snk.moveAndRedrawCanvasAndPlaySounds();
                 window.navigator.vibrate(20);
             }
         }
@@ -296,7 +285,6 @@ snk.move = function() {
             this.checkCollision();
             break;
         default:
-            console.log("snk.orient is not set")
             this.lastorient = 0;
             this.checkCollision();
             this.coord[0][0] = this.coord[0][0] + this.width;
@@ -323,12 +311,21 @@ snk.move = function() {
             this.coord.splice(this.coord.length - 1, 1);
         }
 };
+    
+snk.moveAndRedrawCanvasAndPlaySounds = function() {
+    context.clearRect(0, 0, cWidth, cHeight);
+    drawFood();
+    this.move();
+    this.draw();
+    this.drawScore();
+    this.playSounds();
+}
 
 snk.checkCollision = function() {
     // Check for collision with walls
     if (this.coord[0][0] > cWidth || this.coord[0][1] > cHeight || this.coord[0][0] < 0 || this.coord[0][1] < 0)
         {
-            gameOver();
+            gameOver.initializeGameOver();
         }
     if (this.coord[0][0] == food[0][0] && this.coord[0][1] == food[0][1])
         {
@@ -355,11 +352,11 @@ snk.checkCollision = function() {
         }
         if (x0 === x1 && x0 === this.coord[0][0] && this.coord[0][1] <= y1 && this.coord[0][1] >= y0)
         {
-            gameOver();
+            gameOver.initializeGameOver();
         }
         else if (y0 === y1 && y0 === this.coord[0][1] && this.coord[0][0] <= x1 && this.coord[0][0] >= x0)
         {
-            gameOver();
+            gameOver.initializeGameOver();
         }
     }
 }
@@ -368,7 +365,7 @@ snk.checkCollision = function() {
 // changes location of food whenever snake eats it
 // adds a sound and 1 snake segment and speed boost for every 4th food eaten
 snk.eatFood = function(food) {
-    food[0] = this.width * Math.floor(13.9*Math.random()) + Math.floor(this.width/2);
+    food[0] = this.width * Math.floor((snkFrac - 1.1)*Math.random()) + Math.floor(this.width/2);
     food[1] = this.width * Math.floor((nrSnakesY-1)*Math.random()) + Math.floor(this.width/2);
     this.nrEaten++;
     if (this.nrEaten % 4 === 0)
@@ -383,23 +380,19 @@ snk.eatFood = function(food) {
             var yntlast = this.coord[this.coord.length-2][1];
             if (xlast > xntlast)
             {
-                console.log(xlast);
                 this.coord[this.coord.length-1][0] += this.width;
-                console.log(this.coord[this.coord.length-1][0]);
             }
             else if (xntlast > xlast)
             {
-                console.log(xlast);
                 this.coord[this.coord.length-1][0] -= this.width;
-                console.log(this.coord[this.coord.length-1][0]);
             }
             else if (ylast > yntlast)
             {
-                this.coord[this.coord.length-1][1] -= this.width;
+                this.coord[this.coord.length-1][1] += this.width;
             }
             else if (yntlast > ylast)
             {
-                this.coord[this.coord.length-1][0] += this.width;
+                this.coord[this.coord.length-1][1] -= this.width;
             }
         }
 }
@@ -414,6 +407,7 @@ snk.playSounds = function() {
 }
 
 snk.drawScore = function() {
+    // Canvas default font options for drawing the game score
     context.font = "30px Comic Sans MS";
     context.fillStyle = "#ff0000";
     context.textAlign = "right";
@@ -438,41 +432,135 @@ snk.draw = function() {
     
 // Food array. Stores food objects.
 var food = [[Math.floor(snk.width*2.5), Math.floor(snk.width*4.5), 1]];
-    
-// System time
-var t0 = 0;
-var t1;
-    
-// Main drawing loop. Clears canvas and draws.
-function draw() {
-    t1 = performance.now();
-    if (t1 - t0 > snk.speed) {
-        context.clearRect(0, 0, cWidth, cHeight);
-        snk.move();
-        snk.draw();
-        drawFood();
-        snk.drawScore();
-        snk.playSounds();
-        t0 = performance.now();
-    }
-    window.requestAnimationFrame(draw);
-};
-    
-// Initiate main drawing loop
-draw();
 
-// End current game if snake collides
-function gameOver() {
+// Game over object
+gameOver = {};
+gameOver.hovered = 0; // the difficulty level currently in focus
+gameOver.drawAlternator = true; // helps alternate position of sauces in game over animation
+gameOver.messages = ["Saucetacular", "WOW", "Badical", "Boolio", "Snakeplanes", "Amazeballs", "Ballmazing", "Unballievable"];
+gameOver.initializeGameOver = function() {
+    this.over = true;
+    this.currMessage = this.messages[Math.floor(Math.random() * (this.messages.length - 0.1))];
+    // Disable gameplay event listeners
+    window.removeEventListener("keydown", changeDirection);
+    canvas.removeEventListener("touchstart", changeDirection1);
+    canvas.removeEventListener("mousedown", changeDirection1);
+//    // Freeze the snake in position
+//    snk.speed = 1000000000;
+    canvas.addEventListener("mousemove", hoverDifficulty);
+    window.addEventListener("keydown", keyboardDifficulty);
+    canvas.addEventListener("touchstart", selectDifficulty);
+    canvas.addEventListener("mousedown", selectDifficulty);
+};
+
+gameOver.difficultySelectAnimationDraw = function() {
+    if (gameOver.over == true)
+    {
+        context.font = "50px Comic Sans MS";
+        context.fillStyle = "#ff0000";
+        context.textAlign = "center";
+        context.fillText(this.currMessage + "!", Math.floor(cWidth/2), Math.floor(cHeight/4)-25);
+        context.fillText("You ate " + snk.nrEaten + " balls!", Math.floor(cWidth/2), Math.floor(cHeight/4+25));
+        context.fillText("Choose a level:", Math.floor(cWidth/2), Math.floor(cHeight/4+100));
+        var sauceWidth = sixthcanvas;
+        var sauceHeight = fourthcanvas;
+        for (var i = 0; i < 3; i++)
+        {
+            if (gameOver.hovered === i)
+            {
+                context.save();
+                context.translate(sauceWidth + i * fourthcanvas + Math.floor(sauceWidth/2), halfcanvas + sixthcanvas + Math.floor(sauceHeight/2));
+                if (gameOver.drawAlternator === true)
+                {
+                    context.rotate(0.5);
+                }
+                else
+                {
+                    context.rotate(-0.5);
+                }
+                gameOver.drawAlternator = !gameOver.drawAlternator;
+                context.drawImage(sauceImages[i], Math.floor(-sauceWidth/2), Math.floor(-sauceHeight/2), sauceWidth, sauceHeight);
+                context.restore();
+            }
+            else
+            {
+                context.drawImage(sauceImages[i], sauceWidth + i * fourthcanvas, halfcanvas + sixthcanvas, sauceWidth, sauceHeight);
+            }
+        }
+    }
+};
+
+function hoverDifficulty(e) { // focus difficulty by hovering over options
+    var currentX = e.offsetX;
+    for (var i = 0; i < 3; i++)
+    {
+        if (currentX < Math.floor((i+1) * cWidth / 3) && currentX > Math.floor(i * cWidth / 3) && gameOver.hovered !== i)
+        {
+            gameOver.hovered = i;
+            snk.speed = snk.difficultySpeeds[i];
+            break;
+        }
+    }
+};
+
+function restartGame(difficultyLevel) {
+    // Game over set to false, so select screen animation stops
+    gameOver.over = false;
     // Place snake in starting position and orientation
     snk.coordSet();
     // Reset nrEaten to 0
     snk.nrEaten = 0;
-    // Reset speed to initial
-    snk.speed = snk.startingSpeed;
     // Reset sounds
     snk.soundReset();
-}
+    // Set speed according to difficulty level
+    snk.speed = snk.difficultySpeeds[difficultyLevel];
+    // Re-enable gameplay event listeners
+    window.addEventListener("keydown", changeDirection);
+    canvas.addEventListener("touchstart", changeDirection1);
+    canvas.addEventListener("mousedown", changeDirection1);
+    // Disable game-over event listeners
+    canvas.removeEventListener("mousemove", hoverDifficulty);
+    window.removeEventListener("keydown", keyboardDifficulty);
+    canvas.removeEventListener("touchstart", selectDifficulty);
+    canvas.removeEventListener("mousedown", selectDifficulty);
+};
+    
+function keyboardDifficulty(e) { // focus difficulty by using "left" and "right" arrows or "a" and "d" and select with "enter" or "space" or "up" or "down" arrows
+    switch(e.keyCode)
+    {
+        case 37:
+        case 65: // left arrow or "a"
+            var gameDifficultyNew = (((gameOver.hovered - 1)%3) + 3) % 3;
+            gameOver.hovered = gameDifficultyNew;
+            snk.speed = snk.difficultySpeeds[gameDifficultyNew];
+            break;
+        case 68: // right arrow or "d"
+        case 39:
+            gameDifficultyNew = (((gameOver.hovered + 1)%3) + 3) % 3;
+            gameOver.hovered = gameDifficultyNew;
+            snk.speed = snk.difficultySpeeds[gameDifficultyNew];
+            break;
+        case 32:
+        case 13:
+        case 38:
+        case 40:
+            restartGame(gameOver.hovered);
+    }
+};
 
+function selectDifficulty(e) { // select difficulty with mouse or touch
+    var currentX = e.offsetX;
+    var selectedDifficulty;
+    for (var i = 0; i < 3; i++)
+    {
+        if (currentX < Math.floor((i+1) * cWidth / 3) && currentX > Math.floor(i * cWidth / 3))
+        {
+            selectedDifficulty = i;
+            break;
+        }
+    }
+    restartGame(selectedDifficulty);
+};
 
 // Draws food on canvas
 function drawFood() {
@@ -497,6 +585,23 @@ window.addEventListener("keydown", changeDirection);
 canvas.addEventListener("touchstart", changeDirection1);
 canvas.addEventListener("mousedown", changeDirection1);
 
+// System time
+var t0 = 0;
+var t1;
+    
+// Main drawing loop. Clears canvas and draws.
+function draw() {
+    t1 = performance.now();
+    if (t1 - t0 > snk.speed) {
+        snk.moveAndRedrawCanvasAndPlaySounds();
+        gameOver.difficultySelectAnimationDraw();
+        t0 = performance.now();
+    }
+    window.requestAnimationFrame(draw);
+};
+    
+// Initiate main drawing loop
+draw();
 
 </script>
 </body>
