@@ -439,18 +439,19 @@ gameOver.hovered = 0; // the difficulty level currently in focus
 gameOver.drawAlternator = true; // helps alternate position of sauces in game over animation
 gameOver.messages = ["Saucetacular", "WOW", "Badical", "Boolio", "Snakeplanes", "Amazeballs", "Ballmazing", "Unballievable"];
 gameOver.initializeGameOver = function() {
-    this.over = true;
-    this.currMessage = this.messages[Math.floor(Math.random() * (this.messages.length - 0.1))];
-    // Disable gameplay event listeners
-    window.removeEventListener("keydown", changeDirection);
-    canvas.removeEventListener("touchstart", changeDirection1);
-    canvas.removeEventListener("mousedown", changeDirection1);
-//    // Freeze the snake in position
-//    snk.speed = 1000000000;
-    canvas.addEventListener("mousemove", hoverDifficulty);
-    window.addEventListener("keydown", keyboardDifficulty);
-    canvas.addEventListener("touchstart", selectDifficulty);
-    canvas.addEventListener("mousedown", selectDifficulty);
+    if (!this.over)
+    {
+        this.over = true;
+        this.currMessage = this.messages[Math.floor(Math.random() * (this.messages.length - 0.1))];
+        // Disable gameplay event listeners
+        window.removeEventListener("keydown", changeDirection);
+        canvas.removeEventListener("touchstart", changeDirection1);
+        canvas.removeEventListener("mousedown", changeDirection1);
+        canvas.addEventListener("mousemove", hoverDifficulty);
+        window.addEventListener("keydown", keyboardDifficulty);
+        canvas.addEventListener("touchstart", selectDifficulty);
+        canvas.addEventListener("mousedown", selectDifficulty);
+    }
 };
 
 gameOver.difficultySelectAnimationDraw = function() {
@@ -504,8 +505,6 @@ function hoverDifficulty(e) { // focus difficulty by hovering over options
 };
 
 function restartGame(difficultyLevel) {
-    // Game over set to false, so select screen animation stops
-    gameOver.over = false;
     // Place snake in starting position and orientation
     snk.coordSet();
     // Reset nrEaten to 0
@@ -523,6 +522,8 @@ function restartGame(difficultyLevel) {
     window.removeEventListener("keydown", keyboardDifficulty);
     canvas.removeEventListener("touchstart", selectDifficulty);
     canvas.removeEventListener("mousedown", selectDifficulty);
+    // Game over set to false, so select screen animation stops
+    gameOver.over = false;
 };
     
 function keyboardDifficulty(e) { // focus difficulty by using "left" and "right" arrows or "a" and "d" and select with "enter" or "space" or "up" or "down" arrows
