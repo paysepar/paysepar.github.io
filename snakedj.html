@@ -1,5 +1,5 @@
 <!--
-Consolidate the step and redrawing of everything into 1 function. Make sure the music is in sync when you speed the snake up with forward arrow. Preload audio for it to work on phones. When you die, display a brief message with your final score and also a countdown to new game start.
+Artificial click event for audio to work on phones.
 
 -->
 
@@ -28,15 +28,8 @@ img {
 </style>
 </head>
 <body>
-<canvas id="canvas">
-</canvas>
-<!--
-<audio src="drums/kick-classic.mp3" preload="auto" id="leanBass"/>
-<audio src="drums/hihat-808.mp3" preload="auto" id="leanChords"/>
-<audio src="drums/snare-sumo.mp3" preload="auto" id="leanDrums"/>
-<audio src="drums/clap_017.mp3" preload="auto" id="leanPad"/>
-<audio src="drums/tambourine_027.mp3" preload="auto" id="leanSynth"/>
--->
+<canvas id="canvas"></canvas>
+
 <audio src="drums/kick-heavy.wav" preload="auto" id="leanBass"/>
 <audio src="drums/hihat-electro.wav" preload="auto" id="leanChords"/>
 <audio src="drums/snare-tape.wav" preload="auto" id="leanDrums"/>
