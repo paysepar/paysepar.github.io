@@ -469,7 +469,7 @@ gameOver.difficultySelectAnimationDraw = function() {
             if (gameOver.hovered === i)
             {
                 context.save();
-                context.translate(sauceWidth + i * fourthcanvas + Math.floor(sauceWidth/2), halfcanvas + Math.floor(sauceHeight/2));
+                context.translate(sauceWidth + i * fourthcanvas + Math.floor(sauceWidth/2), halfcanvas + Math.floor(sauceHeight/2) + Math.floor(sixthcanvas/2));
                 if (gameOver.drawAlternator === true)
                 {
                     context.rotate(0.5);
@@ -484,7 +484,7 @@ gameOver.difficultySelectAnimationDraw = function() {
             }
             else
             {
-                context.drawImage(sauceImages[i], sauceWidth + i * fourthcanvas, halfcanvas, sauceWidth, sauceHeight);
+                context.drawImage(sauceImages[i], sauceWidth + i * fourthcanvas, halfcanvas + Math.floor(sixthcanvas/2), sauceWidth, sauceHeight);
             }
         }
     }
