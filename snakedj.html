@@ -457,12 +457,6 @@ gameOver.initializeGameOver = function() {
 gameOver.difficultySelectAnimationDraw = function() {
     if (gameOver.over == true)
     {
-        context.font = "50px Comic Sans MS";
-        context.fillStyle = "#ff0000";
-        context.textAlign = "center";
-        context.fillText(this.currMessage + "!", Math.floor(cWidth/2), Math.floor(cHeight/4)-25);
-        context.fillText("You ate " + snk.nrEaten + " balls!", Math.floor(cWidth/2), Math.floor(cHeight/4+25));
-        context.fillText("Choose a level:", Math.floor(cWidth/2), Math.floor(cHeight/4+100));
         var sauceWidth = sixthcanvas;
         var sauceHeight = fourthcanvas;
         for (var i = 0; i < 3; i++)
@@ -488,6 +482,12 @@ gameOver.difficultySelectAnimationDraw = function() {
                 context.drawImage(sauceImages[i], sauceWidth + i * fourthcanvas, cHeight - 20 - sauceHeight, sauceWidth, sauceHeight);
             }
         }
+        context.font = "50px Comic Sans MS";
+        context.fillStyle = "#ff0000";
+        context.textAlign = "center";
+        context.fillText(this.currMessage + "!", Math.floor(cWidth/2), Math.floor(cHeight/4)-25);
+        context.fillText("You ate " + snk.nrEaten + " balls!", Math.floor(cWidth/2), Math.floor(cHeight/4+25));
+        context.fillText("Choose a level:", Math.floor(cWidth/2), Math.floor(cHeight/4+100));
     }
 };
 
