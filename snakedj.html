@@ -314,7 +314,6 @@ snk.move = function() {
     
 snk.moveAndRedrawCanvasAndPlaySounds = function() {
     context.clearRect(0, 0, cWidth, cHeight);
-    gameOver.difficultySelectAnimationDraw();
     drawFood();
     this.move();
     this.draw();
