@@ -555,10 +555,10 @@ function selectDifficulty(e) { // select difficulty with mouse or touch
     {
         if (currentX < Math.floor((i+1) * cWidth / 3) && currentX > Math.floor(i * cWidth / 3))
         {
-            selectedDifficulty = i;
+            gameOver.hovered = i;
         }
     }
-    restartGame(selectedDifficulty);
+    restartGame(gameOver.hovered);
 };
 
 // Draws food on canvas
