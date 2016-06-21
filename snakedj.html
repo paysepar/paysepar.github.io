@@ -582,6 +582,7 @@ function drawFood() {
 window.addEventListener("keydown", changeDirection);
 canvas.addEventListener("touchstart", changeDirection1);
 canvas.addEventListener("mousedown", changeDirection1);
+window.addEventListener("resize", function() {location.reload()})
 
 // System time
 var t0 = 0;
