@@ -1,5 +1,6 @@
 <!--
 Artificial click event for audio to work on phones.
+Size and resize fonts according to window size.
 
 -->
 
@@ -57,9 +58,9 @@ var sauceImages = [document.getElementById("ketchup"),
 canvas.height = canvas.parentElement.clientHeight;
 canvas.width = canvas.parentElement.clientWidth;
     
-// Snake width is equal to 1/15th of page width
+// Snake width is equal to 1/15th of smaller dimension
 var snkFrac = 15;
-var snkwidth = Math.floor(canvas.width / snkFrac);
+var snkwidth = canvas.height<canvas.width?Math.floor(canvas.height / snkFrac):Math.floor(canvas.width / snkFrac);
 
 // Resize canvas so dimensions are multiple of snake width
 canvas.width = Math.floor(canvas.width / snkwidth) * snkwidth;
