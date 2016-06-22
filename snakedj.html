@@ -79,6 +79,9 @@ var sixthcanvas = Math.floor(cWidth/6);
     
 // 2 pi
 var twopi = Math.PI * 2;
+    
+// Touch coordinates [x0, y0, x1, y1]
+var touchCoord = [];
 
 // Snake object
 var snk = {};
@@ -440,7 +443,8 @@ gameOver.initializeGameOver = function() {
         this.currMessage = this.messages[Math.floor(Math.random() * (this.messages.length - 0.1))];
         // Disable gameplay event listeners
         window.removeEventListener("keydown", changeDirection);
-        canvas.removeEventListener("touchstart", changeDirection1);
+        canvas.removeEventListener("touchstart", touchBegin);
+        canvas.removeEventListener("touchend", touchFinish);
         canvas.removeEventListener("mousedown", changeDirection1);
         canvas.addEventListener("mousemove", hoverDifficulty);
         window.addEventListener("keydown", keyboardDifficulty);
@@ -524,7 +528,8 @@ function restartGame(difficultyLevel) {
     snk.speed = snk.difficultySpeeds[difficultyLevel];
     // Re-enable gameplay event listeners
     window.addEventListener("keydown", changeDirection);
-    canvas.addEventListener("touchstart", changeDirection1);
+    canvas.addEventListener("touchstart", touchBegin);
+    canvas.addEventListener("touchend", touchFinish);
     canvas.addEventListener("mousedown", changeDirection1);
     // Disable game-over event listeners
     canvas.removeEventListener("mousemove", hoverDifficulty);
@@ -534,6 +539,44 @@ function restartGame(difficultyLevel) {
     // Game over set to false, so select screen animation stops
     gameOver.over = false;
 };
+
+function touchBegin(e) {
+    touchCoord[0] = e.offsetX;
+    touchCoord[1] = e.offsetY;
+}
+
+function touchFinish(e) {
+    var xd = touchCoord[0] - e.offsetX;
+    var yd = touchCoord[1] - e.offsetY;
+    if (Math.abs(xd) > Math.abs(yd))
+    {
+        if (snk.orient !== 2 && snk.orient !== 0)
+        {
+            if (xd > 0)
+            {
+                snk.orient = 2;
+            }
+            else if (xd < 0)
+            {
+                snk.orient = 0;
+            }
+        }
+    }
+    else
+    {
+        if (snk.orient !== 1 && snk.orient !== 3)
+        {
+            if (yd > 0)
+            {
+                snk.orient = 3;
+            }
+            else
+            {
+                snk.orient = 1;
+            }
+        }
+    }
+}
     
 function keyboardDifficulty(e) { // focus difficulty by using "left" and "right" arrows or "a" and "d" and select with "enter" or "space" or "up" or "down" arrows
     switch(e.keyCode)
@@ -592,9 +635,7 @@ function drawFood() {
 }
     
 // Event listeners
-window.addEventListener("keydown", changeDirection);
-canvas.addEventListener("touchstart", changeDirection1);
-canvas.addEventListener("mousedown", changeDirection1);
+
 window.addEventListener("resize", function() {location.reload()})
 
 // System time
@@ -610,9 +651,13 @@ function draw() {
     }
     window.requestAnimationFrame(draw);
 };
+
+// start game
+restartGame(0);
     
 // Initiate main drawing loop
 draw();
+
 
 </script>
 </body>
