@@ -13,7 +13,7 @@ Size and resize fonts according to window size.
 <style>
 * { margin: 0; padding: 0;}
 
-body, html { height:100%; }
+body, html { height:100%; overflow: hidden;}
 
 #canvas {
     position:absolute;
@@ -540,13 +540,13 @@ function restartGame(difficultyLevel) {
 var touch = [];
     
 function touchBegin(e) {
-    touch[0] = e.changedTouches[0].offsetX;
-    touch[1] = e.changedTouches[0].offsetY;
+    touch[0] = e.changedTouches[0].pageX;
+    touch[1] = e.changedTouches[0].pageY;
 }
 
 function touchFinish(e) {
-    var xdiff = touch[0] - e.changedTouches[0].offsetX;
-    var ydiff = touch[1] - e.changedTouches[0].offsetY;
+    var xdiff = touch[0] - e.changedTouches[0].pageX;
+    var ydiff = touch[1] - e.changedTouches[0].pageY;
     if (Math.abs(xdiff) > 20 || Math.abs(ydiff) > 20)
     {
         if (Math.abs(xdiff) > Math.abs(ydiff))
@@ -555,11 +555,11 @@ function touchFinish(e) {
             {
                 if (xdiff > 0)
                 {
-                    snk.orient = 0;
+                    snk.orient = 2;
                 }
                 else
                 {
-                    snk.orient = 2;
+                    snk.orient = 0;
                 }
             }
         }
@@ -567,11 +567,11 @@ function touchFinish(e) {
         {
             if (ydiff > 0)
             {
-                snk.orient = 3;
+                snk.orient = 1;
             }
             else
             {
-                snk.orient = 1;
+                snk.orient = 3;
             }
         }
     }
