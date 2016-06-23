@@ -547,29 +547,32 @@ function touchBegin(e) {
 function touchFinish(e) {
     var xdiff = touch[0] - e.changedTouches[0].offsetX;
     var ydiff = touch[1] - e.changedTouches[0].offsetY;
-    if (Math.abs(xdiff) > Math.abs(ydiff))
+    if (Math.abs(xdiff) > 20 || Math.abs(ydiff) > 20)
     {
-        if(snk.lastorient !== 0 && snk.lastorient !== 2)
+        if (Math.abs(xdiff) > Math.abs(ydiff))
         {
-            if (xdiff > 0)
+            if(snk.lastorient !== 0 && snk.lastorient !== 2)
             {
-                snk.orient = 0;
+                if (xdiff > 0)
+                {
+                    snk.orient = 0;
+                }
+                else
+                {
+                    snk.orient = 2;
+                }
             }
-            else
-            {
-                snk.orient = 2;
-            }
-        }
-    }
-    else
-    {
-        if (ydiff > 0)
-        {
-            snk.orient = 3;
         }
         else
         {
-            snk.orient = 1;
+            if (ydiff > 0)
+            {
+                snk.orient = 3;
+            }
+            else
+            {
+                snk.orient = 1;
+            }
         }
     }
 }
