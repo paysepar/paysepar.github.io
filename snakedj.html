@@ -212,22 +212,22 @@ var changeDirection1 = function(e) {
             if (yDiff > 0 && snk.lastorient !== 3 && snk.lastorient !== 1)
             {
                 snk.orient = 3;
-                window.navigator.vibrate(40);
+                window.navigator.vibrate(20);
             }
             else if (yDiff < 0 && snk.lastorient !== 3 && snk.lastorient !== 1)
             {
                 snk.orient = 1;
-                window.navigator.vibrate(40);
+                window.navigator.vibrate(20);
             }
             else if (yDiff > 0 && snk.lastorient === 3)
             {
                 snk.moveAndRedrawCanvasAndPlaySounds();
-                window.navigator.vibrate(40);
+                window.navigator.vibrate(20);
             }
             else if (yDiff < 0 && snk.lastorient === 1)
             {
                 snk.moveAndRedrawCanvasAndPlaySounds();
-                window.navigator.vibrate(40);
+                window.navigator.vibrate(20);
             }
         }
 }
