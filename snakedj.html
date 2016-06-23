@@ -445,7 +445,7 @@ gameOver.initializeGameOver = function() {
         canvas.removeEventListener("mousedown", changeDirection1);
         canvas.addEventListener("mousemove", hoverDifficulty);
         window.addEventListener("keydown", keyboardDifficulty);
-        canvas.addEventListener("touchstart", selectDifficulty);
+        canvas.addEventListener("touchstart", touchDifficulty);
         canvas.addEventListener("mousedown", selectDifficulty);
     }
 };
@@ -531,7 +531,7 @@ function restartGame(difficultyLevel) {
     // Disable game-over event listeners
     canvas.removeEventListener("mousemove", hoverDifficulty);
     window.removeEventListener("keydown", keyboardDifficulty);
-    canvas.removeEventListener("touchstart", selectDifficulty);
+    canvas.removeEventListener("touchstart", touchDifficulty);
     canvas.removeEventListener("mousedown", selectDifficulty);
     // Game over set to false, so select screen animation stops
     gameOver.over = false;
@@ -602,7 +602,7 @@ function keyboardDifficulty(e) { // focus difficulty by using "left" and "right"
     }
 };
 
-function selectDifficulty(e) { // select difficulty with mouse or touch
+function selectDifficulty(e) { // select difficulty with mouse
     var currentX = e.offsetX;
     var selectedDifficulty = 0;
     for (var i = 0; i < 3; i++)
@@ -614,6 +614,18 @@ function selectDifficulty(e) { // select difficulty with mouse or touch
     }
     restartGame(gameOver.hovered);
 };
+
+function touchDifficulty(e) { // select difficulty with touch
+    var currentX = e.changedTouches[0].pageX;
+    for (var i = 0; i < 3; i++)
+    {
+        if (currentX < Math.floor((i+1) * cWidth / 3) && currentX > Math.floor(i * cWidth / 3))
+        {
+            gameOver.hovered = i;
+        }
+    }
+    restartGame(gameOver.hovered);
+}
 
 // Draws food on canvas
 function drawFood() {
