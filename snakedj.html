@@ -79,9 +79,6 @@ var sixthcanvas = Math.floor(cWidth/6);
     
 // 2 pi
 var twopi = Math.PI * 2;
-    
-// Touch coordinates [x0, y0, x1, y1]
-var touchCoord = [];
 
 // Snake object
 var snk = {};
@@ -540,40 +537,39 @@ function restartGame(difficultyLevel) {
     gameOver.over = false;
 };
 
+var touch = [];
+    
 function touchBegin(e) {
-    touchCoord[0] = e.offsetX;
-    touchCoord[1] = e.offsetY;
+    touch[0] = e.changedTouches[0].offsetX;
+    touch[1] = e.changedTouches[0].offsetY;
 }
 
 function touchFinish(e) {
-    var xd = touchCoord[0] - e.offsetX;
-    var yd = touchCoord[1] - e.offsetY;
-    if (Math.abs(xd) > Math.abs(yd))
+    var xdiff = touch[0] - e.changedTouches[0].offsetX;
+    var ydiff = touch[1] - e.changedTouches[0].offsetY;
+    if (Math.abs(xdiff) > Math.abs(ydiff))
     {
-        if (snk.orient !== 2 && snk.orient !== 0)
+        if(snk.lastorient !== 0 && snk.lastorient !== 2)
         {
-            if (xd > 0)
-            {
-                snk.orient = 2;
-            }
-            else if (xd < 0)
+            if (xdiff > 0)
             {
                 snk.orient = 0;
+            }
+            else
+            {
+                snk.orient = 2;
             }
         }
     }
     else
     {
-        if (snk.orient !== 1 && snk.orient !== 3)
+        if (ydiff > 0)
         {
-            if (yd > 0)
-            {
-                snk.orient = 1;
-            }
-            else
-            {
-                snk.orient = 3;
-            }
+            snk.orient = 3;
+        }
+        else
+        {
+            snk.orient = 1;
         }
     }
 }
