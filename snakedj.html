@@ -193,22 +193,18 @@ var changeDirection1 = function(e) {
             if (xDiff > 0 && snk.lastorient !== 0 && snk.lastorient !== 2)
             {
                 snk.orient = 0;
-                window.navigator.vibrate(20);
             }
             else if (xDiff < 0 && snk.lastorient !== 0 && snk.lastorient !== 2)
             {
                 snk.orient = 2;
-                window.navigator.vibrate(20);
             }
             else if (xDiff > 0 && snk.lastorient === 0)
             {
                 snk.moveAndRedrawCanvasAndPlaySounds();
-                window.navigator.vibrate(20);
             }
             else if (xDiff < 0 && snk.lastorient === 2)
             {
                 snk.moveAndRedrawCanvasAndPlaySounds();
-                window.navigator.vibrate(20);
             }
         }
     else
@@ -397,6 +393,7 @@ snk.playSounds = function() {
         {
             this.sounds[this.beatNow][i].currentTime = 0;
             this.sounds[this.beatNow][i].play();
+            window.navigator.vibrate(20);
         }
     this.beatNow = (this.beatNow + 1) % 8;
 }
@@ -556,12 +553,10 @@ function touchFinish(e) {
                 if (xdiff > 0)
                 {
                     snk.orient = 2;
-                    window.navigator.vibrate(20);
                 }
                 else
                 {
                     snk.orient = 0;
-                    window.navigator.vibrate(20);
                 }
             }
         }
@@ -570,12 +565,10 @@ function touchFinish(e) {
             if (ydiff > 0)
             {
                 snk.orient = 1;
-                window.navigator.vibrate(20);
             }
             else
             {
                 snk.orient = 3;
-                window.navigator.vibrate(20);
             }
         }
     }
