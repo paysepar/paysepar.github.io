@@ -562,13 +562,16 @@ function touchFinish(e) {
         }
         else
         {
-            if (ydiff > 0)
+            if(snk.lastorient !== 1 && snk.lastorient !== 3)
             {
-                snk.orient = 1;
-            }
-            else
-            {
-                snk.orient = 3;
+                if (ydiff > 0)
+                {
+                    snk.orient = 1;
+                }
+                else
+                {
+                    snk.orient = 3;
+                }
             }
         }
     }
