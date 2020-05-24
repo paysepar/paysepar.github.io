@@ -61,10 +61,10 @@ animations.add(new Firework(150, 70, 1000, 50))
 animations.add(new TwinkleStar(400, 400, 2000, 30))
 
 var currentInstruments = new Array
-currentInstruments.push(new Instrument('Bass Drum', 'A'.charCodeAt(0), "http://freewavesamples.com/files/Bass-Drum-1.wav"))
-currentInstruments.push(new Instrument('Cymbal Crash', 'S'.charCodeAt(0), "http://freewavesamples.com/files/Crash-Cymbal-1.wav"))
-currentInstruments.push(new Instrument('Closed Hi-Hat', 'D'.charCodeAt(0), "http://freewavesamples.com/files/Closed-Hi-Hat-1.wav"))
-currentInstruments.push(new Instrument('Open Hi-Hat', 'F'.charCodeAt(0), "http://freewavesamples.com/files/Ensoniq-SQ-1-Open-Hi-Hat.wav"))
+currentInstruments.push(new Instrument('Bass Drum', 'A'.charCodeAt(0), "http://paysepar.github.io/drums/clap-808.wav"))
+currentInstruments.push(new Instrument('Cymbal Crash', 'S'.charCodeAt(0), "http://paysepar.github.io/drums/hihat-electro.wav"))
+currentInstruments.push(new Instrument('Closed Hi-Hat', 'D'.charCodeAt(0), "http://paysepar.github.io/drums/kick-heavy.wav"))
+currentInstruments.push(new Instrument('Open Hi-Hat', 'F'.charCodeAt(0), "http://paysepar.github.io/drums/snare-tape.wav"))
 
 drawCanvas() // begin animation
 function drawCanvas() { // clear canvas and draw contents repeatedly until animations are complete
