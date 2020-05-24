@@ -1,0 +1,55 @@
+<!--
+
+An app that allows users to play a drum kit while animations play on a starry sky background. The animations are randomized whenever the page is loaded or refreshed.
+
+Sounds are from freewavesamples.com
+Icons are from freepik.com
+
+
+-->
+
+
+<!DOCTYPE HTML>
+<head>
+<link rel="stylesheet" type="text/css" href="styles.css">
+<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' />
+</head>
+
+<body>
+<canvas id="canvas">Your browser is not up to date with HTML5 canvas.</canvas>
+<div id="instructions">Press the A, S, D, or F keys, or click on the icons to play instruments and view animations. The animations are randomized every time you load/refresh the page. Works best on desktop/laptops running the latest version of the <a href="http://www.google.com/chrome" title="Click here to download the Chrome browser.">Chrome browser</a>.</div>
+
+<!-- The divs addInstrumentsBlock and removeInstrumentsBlock are given the CSS style {display:none} in order to remove them from the page for this version of the app. -->
+<div id="addInstrumentsBlock">
+    Add instruments to play:
+<form id="addAudio">
+    Instrument:
+    <select name='availableInstruments' id='availableInstrumentsSelector'>
+        <option id="blankInstrumentAddOption"></option>
+    </select>
+    <br>
+    Keyboard assignment:
+    <input type="text" maxlength="1" id="audioFilePlayKeyInput">
+</form>
+<button id="addInstrumentButton">+</button>
+</div>
+<div id="removeInstrumentsBlock">
+Remove instruments:
+<form id="removeAudio">
+    <select name = currentInstruments id='currentInstrumentsRemovalSelector'>
+        <option id='blankInstrumentRemoveOption'></option>
+    </select>
+</form>
+<button id='removeInstrumentButton'>-</button>
+</div>
+
+    
+<img src="Bass Drum.png" id="Bass Drum" class="instrumentIcon">
+<img src="Cymbal Crash.png" id="Cymbal Crash" class="instrumentIcon">
+<img src="Closed Hi-Hat.png" id="Closed Hi-Hat" class="instrumentIcon">
+<img src="Open Hi-Hat.png" id="Open Hi-Hat" class="instrumentIcon">
+    
+    <!-- Scripts -->
+<script src="/socket.io/socket.io.js"></script>
+<script src="/scripts.js"></script>
+</body>

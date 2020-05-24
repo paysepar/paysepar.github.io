@@ -1,0 +1,51 @@
+#canvas {
+    border: 1px solid #000;
+    display: block;
+    width: 100%;
+    background: url(starrysky.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    margin-bottom: 10px;
+}
+body {
+    font-family: sans-serif;
+    background: #000;
+    color: white;
+}
+button {
+    font-weight: bold;
+    font-size: 1.5em;
+    color: white;
+    border: 3px solid white;
+    background-color: black;
+}
+button:hover {
+    color: black;
+    background-color: white;
+}
+#removeInstrumentsBlock {
+    float: right;
+    border: 3px double white;
+    padding: 5px;
+    display:none; /* Instrument add and remove options are removed for now */
+}
+#addInstrumentsBlock {
+    float: left;
+    border: 3px double white;
+    padding: 5px;
+    display:none; /* Instrument add and remove options are removed for now */
+}
+.instrumentIcon {
+    display:none;
+}
+a {
+    color: #d75ef4;
+}
+#instructions {
+    padding: 10px;
+    margin: 15px;
+    position:fixed;
+    text-align: justify;
+    border: 2px solid white;
+    font-size: 14px;
+}
