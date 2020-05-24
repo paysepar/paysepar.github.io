@@ -40,19 +40,10 @@ function drawButton(instrument, index)
 
 
 
-var socket = io() // socket io connection object
-socket.emit('getAvailableInstruments')
 var blankInstrumentAddOption = document.getElementById('blankInstrumentAddOption')
 var blankInstrumentRemoveOption = document.getElementById('blankInstrumentRemoveOption')
 var availableInstrumentsSelector = document.getElementById('availableInstrumentsSelector')
-socket.on('availableInstrumentsList', function(instruments) {
-    for (var i = 0; i < instruments.length; i++) {
-        var option = document.createElement('option')
-        option.text = instruments[i].name
-        option.value = instruments[i].url
-        availableInstrumentsSelector.add(option)
-    }
-})
+
 var canvas = document.getElementById('canvas')
 var context = canvas.getContext("2d")
 var animations = new Animations(10) // instantiate Animations object
