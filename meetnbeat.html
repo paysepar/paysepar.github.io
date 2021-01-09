@@ -27,16 +27,16 @@ img {
 <script>
 // Canvas sizing is set to parent dimensions
 var canvas = document.getElementById("canvas")
-var context = canvas.getContext("2d")
+var ctx = canvas.getContext("2d")
 canvas.height = canvas.parentElement.clientHeight
 canvas.width = canvas.parentElement.clientWidth
 var numbeats = 4
 var sizebeat = Math.min(canvas.width/numbeats,canvas.height/numbeats)
 for (var i = 0; i < numbeats; i++)
 {
-    context.fillStyle = "#ff0000"
+    ctx.fillStyle = "#ff0000"
     ctx.fillRect(sizebeat*i,0, sizebeat, sizebeat)
-    context.fill()
+    ctx.fill()
 }
 
 
